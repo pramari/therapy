@@ -27,6 +27,10 @@ export default defineConfig({
 				base: process.env.BASE_PATH || ''
 			},
 
+			prerender: {
+				handleHttpError: 'warn'
+			},
+
 			typescript: {
 				config: (config) => {
 					config.include.push('../drizzle.config.ts');
