@@ -4,10 +4,11 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { sveltekitCookies } from 'better-auth/svelte-kit';
 import { getRequestEvent } from '$app/server';
 import { getDb } from '$lib/server/db';
+import { building } from '$app/environment';
 
 const authConfig = {
-	baseURL: env.ORIGIN,
-	secret: env.BETTER_AUTH_SECRET,
+	baseURL: env.ORIGIN || (building ? 'http://localhost:5173' : undefined),
+	secret: env.BETTER_AUTH_SECRET || (building ? 'a-very-long-dummy-secret-for-build-purposes-only' : undefined),
 	emailAndPassword: { enabled: true },
 	plugins: [
 		sveltekitCookies(getRequestEvent) // make sure this is the last plugin in the array
