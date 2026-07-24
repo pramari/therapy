@@ -19,6 +19,10 @@ const handleParaglide: Handle = ({ event, resolve }) =>
 	});
 
 const handleBetterAuth: Handle = async ({ event, resolve }) => {
+	if (building) {
+		return resolve(event);
+	}
+
 	if (!event.platform?.env?.DB)
 		throw new Error('D1 binding "DB" not found - are you running with wrangler?');
 
