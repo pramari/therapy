@@ -2,7 +2,7 @@ import { sequence } from '@sveltejs/kit/hooks';
 import { building } from '$app/environment';
 import { createAuth } from '$lib/server/auth';
 import { svelteKitHandler } from 'better-auth/svelte-kit';
-import type { Handle } from '@sveltejs/kit';
+import { redirect, type Handle } from '@sveltejs/kit';
 import { getTextDirection } from '$lib/paraglide/runtime';
 import { paraglideMiddleware } from '$lib/paraglide/server';
 
@@ -34,6 +34,20 @@ const handleBetterAuth: Handle = async ({ event, resolve }) => {
 	if (session) {
 		event.locals.session = session.session;
 		event.locals.user = session.user;
+	}
+
+	if (
+		event.route.id &&
+		!event.url.pathname.startsWith('/api/auth') &&
+		!event.locals.session
+	) {
+		const signInResult = await auth.api.signInWithOAuth2({
+			body: {
+				providerId: 'pramari',
+				callbackURL: event.url.origin + event.url.pathname + event.url.search
+			}
+		});
+		throw redirect(302, signInResult.url);
 	}
 
 	return svelteKitHandler({ event, resolve, auth, building });
