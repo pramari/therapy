@@ -38,6 +38,7 @@ const handleBetterAuth: Handle = async ({ event, resolve }) => {
 
 	if (
 		event.route.id &&
+		event.route.id !== '/' &&
 		!event.url.pathname.startsWith('/api/auth') &&
 		!event.locals.session
 	) {
